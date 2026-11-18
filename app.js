@@ -34,9 +34,11 @@ class TypingApp {
     this.initEventListeners();
     this.renderCourseMap();
     this.updateStudentHeader();
+    this.initNetworkMonitoring();
+    this.initPWA();
 
-    // Синхронизация с сервером класса при запуске программы
-    this.syncProgressToServer();
+    // Фоновая проверка сети и синхронизация при запуске программы
+    this.checkNetworkStatus(true);
   }
 
   /* ================= Хранилище (LocalStorage) и профили ПК ================= */
@@ -1410,7 +1412,7 @@ class TypingApp {
       }
 
       const avgWpm = completedCount > 0 ? Math.round(totalWpm / completedCount) : 0;
-      const avgAcc = completedCount > 0 ? Math.round(totalAcc / completedCount) : 100;
+      const avgAcc = completedCount > 0 ? Math.round(totalAcc / completedCount) : 0;
       const prof = this.userProfiles[st] || {};
 
       list.push({
@@ -1439,8 +1441,10 @@ class TypingApp {
     const count = (this.cachedLeaderboard && this.cachedLeaderboard.length) || 0;
     if (this.serverOnline) {
       el.innerHTML = `🟢 <span style="color:#059669; font-weight:700;">Сервер класса онлайн</span> · Синхронизировано (${count} ${this.pluralizeStudents(count)})`;
+    } else if (this.isOnline) {
+      el.innerHTML = `🌐 <span style="color:#2563eb; font-weight:700;">Онлайн-режим (PWA)</span> · Рейтинг сохранён в браузере (${count} ${this.pluralizeStudents(count)})`;
     } else {
-      el.innerHTML = `🟡 <span style="color:#d97706; font-weight:700;">Локальный режим ПК</span> · Для объединения всех ПК класса запустите <em>server.py</em>`;
+      el.innerHTML = `🟡 <span style="color:#d97706; font-weight:700;">Офлайн-режим</span> · Работа без интернета (${count} ${this.pluralizeStudents(count)})`;
     }
   }
 
@@ -1462,19 +1466,19 @@ class TypingApp {
       this.cachedLeaderboard = this.buildLocalLeaderboard();
     }
 
-    // Сортировка по активной вкладке
+    // Сортировка по активной вкладке с корректными дополнительными критериями
     const sorted = [...this.cachedLeaderboard];
     if (this.leaderboardTab === 'speed') {
-      sorted.sort((a, b) => (b.avgWpm || 0) - (a.avgWpm || 0) || (b.totalStars || 0) - (a.totalStars || 0));
+      sorted.sort((a, b) => (b.avgWpm || 0) - (a.avgWpm || 0) || (b.totalStars || 0) - (a.totalStars || 0) || (b.completedLessons || 0) - (a.completedLessons || 0));
     } else if (this.leaderboardTab === 'lessons') {
-      sorted.sort((a, b) => (b.completedLessons || 0) - (a.completedLessons || 0) || (b.totalStars || 0) - (a.totalStars || 0));
+      sorted.sort((a, b) => (b.completedLessons || 0) - (a.completedLessons || 0) || (b.totalStars || 0) - (a.totalStars || 0) || (b.avgWpm || 0) - (a.avgWpm || 0));
     } else if (this.leaderboardTab === 'accuracy') {
-      sorted.sort((a, b) => (b.avgAccuracy || 0) - (a.avgAccuracy || 0) || (b.completedLessons || 0) - (a.completedLessons || 0));
+      sorted.sort((a, b) => (b.avgAccuracy || 0) - (a.avgAccuracy || 0) || (b.completedLessons || 0) - (a.completedLessons || 0) || (b.totalStars || 0) - (a.totalStars || 0));
     } else { // 'stars'
       sorted.sort((a, b) => (b.totalStars || 0) - (a.totalStars || 0) || (b.avgWpm || 0) - (a.avgWpm || 0) || (b.completedLessons || 0) - (a.completedLessons || 0));
     }
 
-    // 1. Отрисовка Пьедестала Топ-3
+    // 1. Отрисовка Пьедестала Топ-3 (только среди учеников с реальными результатами)
     podiumEl.innerHTML = '';
     const avatars = ['🦁', '🚀', '🦊', '🐯', '⚡', '🐼', '🦄', '🦅', '🐬', '🏆', '🌟', '🎯'];
 
@@ -1482,7 +1486,7 @@ class TypingApp {
       switch (this.leaderboardTab) {
         case 'speed': return `⚡ ${item.avgWpm || 0} СВМ`;
         case 'lessons': return `📚 ${item.completedLessons || 0} ур.`;
-        case 'accuracy': return `🎯 ${item.avgAccuracy || 100}%`;
+        case 'accuracy': return `🎯 ${item.completedLessons > 0 ? (item.avgAccuracy || 0) + '%' : '—'}`;
         default: return `⭐ ${item.totalStars || 0}`;
       }
     };
@@ -1493,11 +1497,13 @@ class TypingApp {
       return avatars[code % avatars.length];
     };
 
-    // Порядок на спортивном пьедестале: [2-е место слева, 1-е место в центре, 3-е место справа]
+    // Отображаем на пьедестале только тех, кто прошёл хотя бы 1 урок или заработал звёзды
+    const activeForPodium = sorted.filter(s => (s.completedLessons || 0) > 0 || (s.totalStars || 0) > 0 || (s.avgWpm || 0) > 0);
+
     const podiumItems = [];
-    if (sorted.length > 1) podiumItems.push({ rank: 2, item: sorted[1], stepClass: 'podium-step-2', medal: '🥈' });
-    if (sorted.length > 0) podiumItems.push({ rank: 1, item: sorted[0], stepClass: 'podium-step-1', medal: '🥇' });
-    if (sorted.length > 2) podiumItems.push({ rank: 3, item: sorted[2], stepClass: 'podium-step-3', medal: '🥉' });
+    if (activeForPodium.length > 1) podiumItems.push({ rank: 2, item: activeForPodium[1], stepClass: 'podium-step-2', medal: '🥈' });
+    if (activeForPodium.length > 0) podiumItems.push({ rank: 1, item: activeForPodium[0], stepClass: 'podium-step-1', medal: '🥇' });
+    if (activeForPodium.length > 2) podiumItems.push({ rank: 3, item: activeForPodium[2], stepClass: 'podium-step-3', medal: '🥉' });
 
     podiumItems.forEach(p => {
       const step = document.createElement('div');
@@ -1518,6 +1524,20 @@ class TypingApp {
 
     // 2. Отрисовка Таблицы
     tbodyEl.innerHTML = '';
+
+    if (sorted.length === 0) {
+      tbodyEl.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 32px 16px; color: #64748b;">
+            <div style="font-size: 32px; margin-bottom: 8px;">🎯</div>
+            <div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Пока нет данных для рейтинга</div>
+            <div style="font-size: 13px;">Пройдите хотя бы один урок, чтобы появиться в рейтинге класса!</div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
     sorted.forEach((item, idx) => {
       const rank = idx + 1;
       const isCurrent = item.username === this.currentStudent || item.username === this.currentWindowsUser;
@@ -1549,7 +1569,7 @@ class TypingApp {
         </td>
         <td class="col-stars">⭐ <strong>${item.totalStars || 0}</strong></td>
         <td class="col-speed">⚡ <strong>${item.avgWpm || 0}</strong> <span style="font-size:11px; color:#64748b;">(${(item.avgWpm || 0) * 5} зн/м)</span></td>
-        <td class="col-acc">🎯 <strong>${item.avgAccuracy || 100}%</strong></td>
+        <td class="col-acc">🎯 <strong>${item.completedLessons > 0 ? (item.avgAccuracy || 0) + '%' : '—'}</strong></td>
         <td class="col-lessons">📚 <strong>${item.completedLessons || 0}</strong> <span style="font-size:11px; color:#64748b;">/ 489</span></td>
         <td class="col-status">${timeAgoText}</td>
       `;
@@ -1649,6 +1669,123 @@ class TypingApp {
     };
 
     this.openModal(this.modalSettings);
+  }
+
+  /* ================= Мониторинг сети и PWA (установка на рабочий стол) ================= */
+  initNetworkMonitoring() {
+    this.isOnline = navigator.onLine;
+    this.updateNetworkBadge(this.isOnline);
+
+    window.addEventListener('online', () => {
+      this.checkNetworkStatus(true);
+    });
+
+    window.addEventListener('offline', () => {
+      this.isOnline = false;
+      this.updateNetworkBadge(false);
+      this.updateSyncStatus();
+    });
+
+    // Фоновая периодическая проверка подключения каждые 30 секунд
+    setInterval(() => {
+      this.checkNetworkStatus(false);
+    }, 30000);
+  }
+
+  async checkNetworkStatus(triggerSync = false) {
+    if (!navigator.onLine) {
+      this.isOnline = false;
+      this.updateNetworkBadge(false);
+      this.updateSyncStatus();
+      return false;
+    }
+
+    // Проверяем реальное интернет-соединение через быстрый HEAD-запрос
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const pingUrl = `app_icon.png?ping=${Date.now()}`;
+      const resp = await fetch(pingUrl, {
+        method: 'HEAD',
+        cache: 'no-store',
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      this.isOnline = resp.ok;
+    } catch (e) {
+      this.isOnline = false;
+    }
+
+    this.updateNetworkBadge(this.isOnline);
+    this.updateSyncStatus();
+
+    // Если есть связь и запрошена синхронизация — синхронизируем данные с сервером
+    if (this.isOnline && triggerSync) {
+      this.syncProgressToServer();
+    }
+
+    return this.isOnline;
+  }
+
+  updateNetworkBadge(isOnline) {
+    const badge = document.getElementById('network-status-badge');
+    const text = document.getElementById('network-status-text');
+    if (!badge || !text) return;
+
+    if (isOnline) {
+      badge.classList.remove('offline');
+      badge.classList.add('online');
+      text.textContent = 'Онлайн';
+      badge.title = 'Подключение к сети активно. Данные синхронизируются в фоне.';
+    } else {
+      badge.classList.remove('online');
+      badge.classList.add('offline');
+      text.textContent = 'Офлайн';
+      badge.title = 'Нет подключения к сети. Тренажёр работает автономно.';
+    }
+  }
+
+  initPWA() {
+    // 1. Регистрация Service Worker для PWA и офлайн-кэширования
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => {
+            console.log('[PWA] Service Worker успешно зарегистрирован:', reg.scope);
+          })
+          .catch((err) => {
+            console.warn('[PWA] Ошибка регистрации Service Worker:', err);
+          });
+      });
+    }
+
+    // 2. Обработка запроса браузера на установку на Рабочий стол (beforeinstallprompt)
+    const btnInstall = document.getElementById('btn-pwa-install');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Предотвращаем автоматический показ стандартной плашки браузера
+      e.preventDefault();
+      this.deferredPwaPrompt = e;
+      if (btnInstall) {
+        btnInstall.classList.remove('hidden');
+        btnInstall.onclick = async () => {
+          if (!this.deferredPwaPrompt) return;
+          this.deferredPwaPrompt.prompt();
+          const choiceResult = await this.deferredPwaPrompt.userChoice;
+          if (choiceResult && choiceResult.outcome === 'accepted') {
+            console.log('[PWA] Пользователь установил тренажёр на рабочий стол');
+            btnInstall.classList.add('hidden');
+          }
+          this.deferredPwaPrompt = null;
+        };
+      }
+    });
+
+    // 3. Событие успешного завершения установки
+    window.addEventListener('appinstalled', () => {
+      console.log('[PWA] Приложение установлено на устройство');
+      if (btnInstall) btnInstall.classList.add('hidden');
+      this.deferredPwaPrompt = null;
+    });
   }
 
   /* ================= Вспомогательные функции модалок ================= */

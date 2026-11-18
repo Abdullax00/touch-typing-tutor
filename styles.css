@@ -173,6 +173,55 @@ body {
   gap: 10px;
 }
 
+/* Бейдж онлайн/офлайн статуса */
+.network-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid var(--border-color);
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.network-badge.online {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #a7f3d0;
+}
+
+.network-badge.offline {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.network-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+
+#btn-pwa-install {
+  border-color: #6366f1;
+  color: #4f46e5;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+#btn-pwa-install:hover {
+  background: #eef2ff;
+  border-color: #4f46e5;
+  transform: translateY(-1px);
+}
+
 /* ================= КНОПКИ ================= */
 .btn {
   display: inline-flex;
