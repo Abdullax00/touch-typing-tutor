@@ -232,8 +232,8 @@ class TypingApp {
 
   /* ================= Обработчики событий ================= */
   initEventListeners() {
-    // Глобальный перехват клавиатуры
-    window.addEventListener('keydown', (e) => this.handleGlobalKeyDown(e));
+    // Глобальный перехват клавиатуры в фазе capture для мгновенного отклика
+    window.addEventListener('keydown', (e) => this.handleGlobalKeyDown(e), true);
 
     // Навигация
     document.getElementById('btn-nav-map').addEventListener('click', () => this.showScreen('map'));
@@ -655,58 +655,96 @@ class TypingApp {
 
   /* ================= Обработка ввода с клавиатуры ================= */
   handleGlobalKeyDown(e) {
-    // Если открыты модальные окна, клавиатура управляет диалогами поверх экрана
+    const isEnter = e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter' || e.keyCode === 13;
+    const isSpace = e.code === 'Space' || e.key === ' ' || e.keyCode === 32;
+
+    // Если открыты любые модальные окна поверх интерфейса
     if (this.isAnyModalOpen()) {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' || e.keyCode === 27) {
+        e.preventDefault();
+        e.stopPropagation();
         this.closeAllModals();
         return;
       }
 
-      // Нажатие Enter или Пробел нажимает главную кнопку поверх интерфейса
-      if (e.key === 'Enter' || e.code === 'Space') {
-        // 1. Модальное окно результатов урока: «Следующий урок →»
-        if (this.modalResults && !this.modalResults.classList.contains('hidden')) {
+      // Нажатие Enter или Пробел нажимает активную кнопку
+      if (isEnter || isSpace) {
+        // 1. Если фокус уже находится на кнопке — нажимаем её
+        if (document.activeElement && document.activeElement.tagName === 'BUTTON' && !document.activeElement.disabled) {
           e.preventDefault();
-          const btnNext = document.getElementById('btn-results-next');
-          if (btnNext) btnNext.click();
+          e.stopPropagation();
+          document.activeElement.click();
           return;
         }
 
-        // 2. Вводная инструкция к уроку: «Далее →» или «Начать урок! 🚀»
+        // 2. Теоретический урок: кнопка «Понятно, продолжить! 👍»
+        if (this.modalTheory && !this.modalTheory.classList.contains('hidden')) {
+          e.preventDefault();
+          e.stopPropagation();
+          const btnDone = document.getElementById('btn-theory-done');
+          if (btnDone) {
+            btnDone.click();
+            return;
+          }
+        }
+
+        // 3. Вводные слайды: кнопка «Далее →» или «Начать урок! 🚀»
         if (this.modalIntro && !this.modalIntro.classList.contains('hidden')) {
           e.preventDefault();
+          e.stopPropagation();
           const btnStart = document.getElementById('btn-intro-start');
           const btnNext = document.getElementById('btn-intro-next');
-          if (btnStart && btnStart.style.display !== 'none') {
+          if (btnStart && btnStart.offsetParent !== null) {
             btnStart.click();
-          } else if (btnNext && btnNext.style.display !== 'none') {
+          } else if (btnNext && btnNext.offsetParent !== null) {
             btnNext.click();
           }
           return;
         }
 
-        // 3. Теоретический урок: «Понятно, продолжить! 👍»
-        if (this.modalTheory && !this.modalTheory.classList.contains('hidden')) {
+        // 4. Окно результатов: кнопка «Следующий урок →»
+        if (this.modalResults && !this.modalResults.classList.contains('hidden')) {
           e.preventDefault();
-          const btnDone = document.getElementById('btn-theory-done');
-          if (btnDone) btnDone.click();
-          return;
+          e.stopPropagation();
+          const btnNext = document.getElementById('btn-results-next');
+          if (btnNext) {
+            btnNext.click();
+            return;
+          }
         }
 
-        // 4. Окно рейтинга: закрыть
+        // 5. Окно рейтинга
         if (this.modalLeaderboard && !this.modalLeaderboard.classList.contains('hidden')) {
           e.preventDefault();
+          e.stopPropagation();
           const btnLbClose = document.getElementById('btn-lb-close-bottom');
-          if (btnLbClose) btnLbClose.click();
-          return;
+          if (btnLbClose) {
+            btnLbClose.click();
+            return;
+          }
         }
 
-        // 5. Окно настроек учителя: «Готово»
+        // 6. Окно настроек учителя
         if (this.modalSettings && !this.modalSettings.classList.contains('hidden')) {
           if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
             e.preventDefault();
+            e.stopPropagation();
             const btnClose = document.getElementById('btn-settings-close');
-            if (btnClose) btnClose.click();
+            if (btnClose) {
+              btnClose.click();
+              return;
+            }
+          }
+        }
+
+        // 7. Универсальный поиск главной активной кнопки в открытом окне
+        const activeModal = document.querySelector('.modal-backdrop:not(.hidden)');
+        if (activeModal) {
+          const primaryBtn = activeModal.querySelector('.btn-primary, .btn-success, button.btn:not(.btn-secondary):not(.btn-outline)');
+          if (primaryBtn && primaryBtn.offsetParent !== null) {
+            e.preventDefault();
+            e.stopPropagation();
+            primaryBtn.click();
             return;
           }
         }
@@ -714,22 +752,34 @@ class TypingApp {
 
       // Перелистывание слайдов интро стрелками клавиатуры (Вправо / Влево)
       if (this.modalIntro && !this.modalIntro.classList.contains('hidden')) {
-        if (e.key === 'ArrowRight') {
+        if (e.key === 'ArrowRight' || e.code === 'ArrowRight') {
           e.preventDefault();
+          e.stopPropagation();
           const btnNext = document.getElementById('btn-intro-next');
           const btnStart = document.getElementById('btn-intro-start');
-          if (btnStart && btnStart.style.display !== 'none') btnStart.click();
-          else if (btnNext && btnNext.style.display !== 'none') btnNext.click();
+          if (btnStart && btnStart.offsetParent !== null) btnStart.click();
+          else if (btnNext && btnNext.offsetParent !== null) btnNext.click();
           return;
-        } else if (e.key === 'ArrowLeft') {
+        } else if (e.key === 'ArrowLeft' || e.code === 'ArrowLeft') {
           e.preventDefault();
+          e.stopPropagation();
           const btnPrev = document.getElementById('btn-intro-prev');
-          if (btnPrev && btnPrev.style.display !== 'none') btnPrev.click();
+          if (btnPrev && btnPrev.offsetParent !== null) btnPrev.click();
           return;
         }
       }
 
       return;
+    }
+
+    // Если открыта карта уроков и нажат Enter — запустить следующий доступный урок
+    if (this.viewMap && !this.viewMap.classList.contains('hidden') && isEnter) {
+      const nextTile = document.querySelector('.lesson-tile:not(.tile-locked):not(.tile-completed)');
+      if (nextTile) {
+        e.preventDefault();
+        nextTile.click();
+        return;
+      }
     }
 
     // Если игра активна

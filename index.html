@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>В стране клавиш — Офлайн тренажёр слепой печати</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2.2">
   <script src="user_env.js"></script>
 </head>
 <body>
@@ -161,8 +161,8 @@
         <span id="intro-step-counter" class="step-counter">Шаг 1 из 3</span>
         <div class="intro-buttons">
           <button id="btn-intro-prev" class="btn btn-secondary">← Назад</button>
-          <button id="btn-intro-next" class="btn btn-primary">Далее → <kbd class="kbd-hint">Enter ↵</kbd></button>
-          <button id="btn-intro-start" class="btn btn-success" style="display:none">Начать урок! 🚀 <kbd class="kbd-hint">Enter ↵</kbd></button>
+          <button id="btn-intro-next" class="btn btn-primary">Далее →</button>
+          <button id="btn-intro-start" class="btn btn-success" style="display:none">Начать урок! 🚀</button>
         </div>
       </div>
     </div>
@@ -207,7 +207,7 @@
       <div class="results-footer-actions">
         <button id="btn-results-map" class="btn btn-secondary">К списку уроков</button>
         <button id="btn-results-retry" class="btn btn-outline">🔄 Повторить</button>
-        <button id="btn-results-next" class="btn btn-success btn-lg">Следующий урок → <kbd class="kbd-hint">Enter ↵</kbd></button>
+        <button id="btn-results-next" class="btn btn-success btn-lg">Следующий урок →</button>
       </div>
     </div>
   </div>
@@ -218,7 +218,7 @@
       <h2 id="theory-title">Полезные советы</h2>
       <div id="theory-content" class="theory-body"></div>
       <div class="modal-footer">
-        <button id="btn-theory-done" class="btn btn-primary btn-lg">Понятно, продолжить! 👍 <kbd class="kbd-hint">Enter ↵</kbd></button>
+        <button id="btn-theory-done" class="btn btn-primary btn-lg">Понятно, продолжить! 👍</button>
       </div>
     </div>
   </div>
@@ -318,6 +318,6 @@
   <script src="keyboard.js"></script>
   <script src="audio.js"></script>
   <script src="game.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=2.2"></script>
 </body>
 </html>
