@@ -1,0 +1,1642 @@
+/* ==========================================================================
+   Локальный тренажёр слепой печати «В стране клавиш»
+   Стили оформления интерфейса (Современный, дружелюбный дизайн для детей и подростков)
+   ========================================================================== */
+
+:root {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #e0e7ff;
+  
+  --success: #10b981;
+  --success-light: #d1fae5;
+  
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  
+  --danger: #ef4444;
+  --danger-light: #fee2e2;
+
+  --border-color: #e2e8f0;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 16px rgba(79, 70, 229, 0.35);
+
+  /* Цвета пальцев */
+  --finger-l-pinky: #f43f5e;
+  --finger-l-ring: #a855f7;
+  --finger-l-middle: #3b82f6;
+  --finger-l-index: #10b981;
+  --finger-thumb: #64748b;
+  --finger-r-index: #f59e0b;
+  --finger-r-middle: #06b6d4;
+  --finger-r-ring: #8b5cf6;
+  --finger-r-pinky: #ec4899;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================= ХЕДЕР ПРИЛОЖЕНИЯ ================= */
+.app-header {
+  background: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-color);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  transition: background 0.2s;
+}
+
+.logo-badge:hover {
+  background: var(--primary-light);
+}
+
+.logo-icon {
+  font-size: 32px;
+}
+
+.logo-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--primary);
+  display: block;
+}
+
+.logo-subtitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.student-profile-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-primary);
+  padding: 6px 12px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.student-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.student-dropdown {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  outline: none;
+  cursor: pointer;
+}
+
+.header-stats-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--warning-light);
+  color: #92400e;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-lg);
+  border: 1px solid #fde68a;
+}
+
+.header-stats-pill .divider {
+  color: #d97706;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ================= КНОПКИ ================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+  background: #f1f5f9;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary-light);
+}
+.btn-outline:hover {
+  background: var(--primary-light);
+}
+
+.btn-success {
+  background: var(--success);
+  color: #ffffff;
+}
+.btn-success:hover {
+  background: #059669;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #ffffff;
+}
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.btn-lg {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 16px;
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.btn-icon {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  font-size: 16px;
+  padding: 8px 10px;
+}
+.btn-icon:hover {
+  background: #e2e8f0;
+}
+
+/* ================= ЭКРАНЫ ================= */
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ================= ЭКРАН 1: КАРТА КУРСА ================= */
+.map-hero {
+  text-align: center;
+  padding: 32px 20px 20px;
+  background: linear-gradient(180deg, #ede9fe 0%, var(--bg-primary) 100%);
+}
+
+.map-hero h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #3730a3;
+  margin-bottom: 8px;
+}
+
+.map-hero p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.sections-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.section-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-badge {
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.section-meta {
+  display: flex;
+  gap: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.lessons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.lesson-tile {
+  background: #f8fafc;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  min-height: 115px;
+}
+
+.lesson-tile.unlocked:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.lesson-tile.completed {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.lesson-tile.locked {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.tile-num {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-secondary);
+}
+
+.tile-icon {
+  font-size: 18px;
+}
+
+.tile-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin: 4px 0 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 32px;
+}
+
+.tile-stars {
+  font-size: 14px;
+  color: #cbd5e1;
+  display: flex;
+  gap: 2px;
+}
+
+.star-mini.active {
+  color: #f59e0b;
+}
+
+.tile-wpm {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-top: 4px;
+}
+
+.tile-lock {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  opacity: 0.7;
+}
+
+/* ================= ЭКРАН 2: ПРОХОЖДЕНИЕ УРОКА ================= */
+.lesson-top-bar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+
+.lesson-meta-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.lesson-headings {
+  display: flex;
+  flex-direction: column;
+}
+
+.lesson-section-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lesson-main-title {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.live-metrics {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.metric-card {
+  text-align: center;
+  min-width: 75px;
+}
+
+.metric-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+}
+
+.metric-val-wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+}
+
+.metric-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-unit {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.metric-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  display: block;
+}
+
+.error-color {
+  color: var(--danger) !important;
+}
+
+.accent-blue {
+  color: var(--primary) !important;
+}
+
+.lesson-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Предупреждение о раскладке */
+.lang-alert {
+  background: #fef2f2;
+  border-bottom: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ================= ПОЛЕ ТЕКСТА УРОКА ================= */
+.typing-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+  background: linear-gradient(180deg, #f1f5f9 0%, var(--bg-primary) 100%);
+  min-height: 180px;
+}
+
+.text-display-box {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 24px 32px;
+  max-width: 960px;
+  width: 100%;
+  max-height: 240px;
+  overflow-y: auto;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 28px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: none;
+  box-shadow: var(--shadow-sm);
+  outline: none;
+}
+
+.char {
+  position: relative;
+  color: #475569;
+  border-radius: 4px;
+}
+
+.char.correct {
+  color: #10b981;
+  background-color: #ecfdf5;
+}
+
+.char.error {
+  color: #ef4444;
+  background-color: #fee2e2;
+  text-decoration: underline wavy #dc2626;
+}
+
+.char.current {
+  background-color: #e0e7ff;
+  color: #312e81;
+  font-weight: 800;
+  box-shadow: 0 0 0 2px #6366f1;
+  animation: pulse-cursor 1.2s infinite ease-in-out;
+}
+
+@keyframes pulse-cursor {
+  0%, 100% { box-shadow: 0 0 0 2px #6366f1; }
+  50% { box-shadow: 0 0 0 4px #818cf8; }
+}
+
+/* ================= ВИРТУАЛЬНАЯ КЛАВИАТУРА И РУКИ ================= */
+.trainer-bottom-area {
+  background: #ffffff;
+  border-top: 2px solid var(--border-color);
+  padding: 16px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.keyboard-wrapper {
+  max-width: 860px;
+  width: 100%;
+}
+
+.virtual-keyboard {
+  background: #1e293b;
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4);
+}
+
+.kb-row {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
+.kb-key {
+  flex: 1;
+  height: 48px;
+  background: #334155;
+  border-radius: 6px;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  position: relative;
+  user-select: none;
+  box-shadow: 0 3px 0 #1e293b;
+  transition: all 0.08s ease;
+  border-top: 3px solid var(--finger-color, #475569);
+}
+
+.kb-key .key-shift-char {
+  font-size: 10px;
+  color: #94a3b8;
+  line-height: 1;
+}
+
+.kb-key .key-normal-char {
+  font-size: 15px;
+  line-height: 1.1;
+}
+
+.kb-key .key-main {
+  font-size: 13px;
+}
+
+/* Тактильная засечка для А и О */
+.kb-key.key-marker::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 12px;
+  height: 2px;
+  background: #94a3b8;
+  border-radius: 2px;
+}
+
+/* Подсветка целевой клавиши */
+.kb-key.key-target {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border-top-color: #a5b4fc !important;
+  box-shadow: 0 0 16px #6366f1, 0 3px 0 #3730a3 !important;
+  transform: translateY(-2px);
+  animation: target-key-glow 1s infinite alternate;
+}
+
+@keyframes target-key-glow {
+  0% { box-shadow: 0 0 10px #6366f1, 0 3px 0 #3730a3; }
+  100% { box-shadow: 0 0 20px #818cf8, 0 3px 0 #3730a3; }
+}
+
+/* Подсветка противоположного Shift */
+.kb-key.key-shift-active {
+  background: #ea580c !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 16px #fb923c, 0 3px 0 #9a3412 !important;
+  animation: target-key-glow 0.8s infinite alternate;
+}
+
+/* Анимация физического нажатия клавиши */
+.kb-key.key-pressed-ok {
+  transform: translateY(3px) !important;
+  box-shadow: 0 0 0 transparent !important;
+  background: #10b981 !important;
+}
+
+.kb-key.key-pressed-err {
+  transform: translateY(3px) !important;
+  box-shadow: 0 0 0 transparent !important;
+  background: #ef4444 !important;
+}
+
+/* ================= ПОДСКАЗКА ДЛЯ РУК ================= */
+.hands-wrapper {
+  max-width: 860px;
+  width: 100%;
+}
+
+.hands-guide-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 12px 16px 8px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: center;
+}
+
+.hands-svg {
+  width: 100%;
+  max-width: 860px;
+  height: auto;
+  max-height: 200px;
+  display: block;
+  overflow: visible;
+}
+
+/* Ладони и контуры */
+.hand-palm {
+  fill: #f8fafc;
+  stroke: #cbd5e1;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.04));
+}
+
+.hand-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  fill: #94a3b8;
+  text-anchor: middle;
+  user-select: none;
+}
+
+/* Группа пальца */
+.finger-group {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+
+.finger-phalanx {
+  fill: #ffffff;
+  stroke: #cbd5e1;
+  stroke-width: 2;
+  transition: all 0.2s ease;
+}
+
+.finger-nail {
+  fill: #f8fafc;
+  stroke: #e2e8f0;
+  stroke-width: 1.5;
+}
+
+.finger-pad-dot {
+  transition: all 0.2s ease;
+}
+
+.finger-tag {
+  font-size: 11px;
+  font-weight: 800;
+  fill: #64748b;
+  text-anchor: middle;
+  user-select: none;
+  transition: fill 0.2s ease;
+}
+
+/* Цвета подушечек пальцев (синхронизированы с клавиатурой) */
+.f-pinky-l .finger-pad-dot  { fill: var(--finger-l-pinky); }
+.f-ring-l .finger-pad-dot    { fill: var(--finger-l-ring); }
+.f-middle-l .finger-pad-dot  { fill: var(--finger-l-middle); }
+.f-index-l .finger-pad-dot   { fill: var(--finger-l-index); }
+.f-thumb-l .finger-pad-dot   { fill: var(--finger-thumb); }
+
+.f-thumb-r .finger-pad-dot   { fill: var(--finger-thumb); }
+.f-index-r .finger-pad-dot   { fill: var(--finger-r-index); }
+.f-middle-r .finger-pad-dot  { fill: var(--finger-r-middle); }
+.f-ring-r .finger-pad-dot    { fill: var(--finger-r-ring); }
+.f-pinky-r .finger-pad-dot   { fill: var(--finger-r-pinky); }
+
+/* Активное состояние пальца (Целевой палец светится и поднимается) */
+.finger-group.active {
+  transform: translateY(-8px) scale(1.05);
+}
+
+.finger-group.active .finger-phalanx {
+  fill: #e0e7ff !important;
+  stroke: #4f46e5 !important;
+  stroke-width: 3.5 !important;
+  filter: drop-shadow(0 0 12px rgba(79, 70, 229, 0.7));
+}
+
+.finger-group.active .finger-pad-dot {
+  r: 9 !important;
+  filter: drop-shadow(0 0 8px rgba(79, 70, 229, 0.9));
+}
+
+.finger-group.active .finger-tag {
+  fill: #312e81 !important;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* Активное состояние Shift (Противоположный мизинец подсвечивается оранжевым) */
+.finger-group.shift-active {
+  transform: translateY(-8px) scale(1.05);
+}
+
+.finger-group.shift-active .finger-phalanx {
+  fill: #ffedd5 !important;
+  stroke: #ea580c !important;
+  stroke-width: 3.5 !important;
+  filter: drop-shadow(0 0 12px rgba(234, 88, 12, 0.7));
+}
+
+.finger-group.shift-active .finger-pad-dot {
+  r: 9 !important;
+  fill: #ea580c !important;
+  filter: drop-shadow(0 0 8px rgba(234, 88, 12, 0.9));
+}
+
+.finger-group.shift-active .finger-tag {
+  fill: #9a3412 !important;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* Центральный блок-карточка внутри SVG */
+.center-display-card {
+  fill: #ffffff;
+  stroke: #e2e8f0;
+  stroke-width: 2;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.05));
+}
+
+.center-key-box {
+  fill: #4f46e5;
+  filter: drop-shadow(0 4px 12px rgba(79, 70, 229, 0.4));
+}
+
+/* ================= МИНИ-ИГРА: ВОЗДУШНЫЕ ШАРИКИ ================= */
+.balloon-game-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-header {
+  background: #ffffff;
+  border-bottom: 2px solid var(--border-color);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.game-stat {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.game-canvas-area {
+  flex: 1;
+  position: relative;
+  background: #e0f2fe;
+  overflow: hidden;
+  display: flex;
+}
+
+#balloon-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.game-input-display {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-lg);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-md);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.game-input-active .typed-done {
+  color: var(--success);
+}
+.game-input-active .typed-rest {
+  color: var(--text-primary);
+}
+
+/* ================= РЕЖИМ СВОЕГО ТЕКСТА ================= */
+.custom-text-panel {
+  max-width: 800px;
+  width: 100%;
+  margin: 40px auto;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+.custom-text-panel h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.custom-text-panel p {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.custom-text-panel textarea {
+  width: 100%;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+  margin-bottom: 20px;
+}
+
+.custom-text-panel textarea:focus {
+  border-color: var(--primary);
+}
+
+.custom-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* ================= МОДАЛЬНЫЕ ОКНА ================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-card {
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  max-width: 580px;
+  width: 100%;
+  padding: 32px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modal-pop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-pop {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Модалка Интро */
+.intro-header {
+  margin-bottom: 20px;
+}
+.intro-tag {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.intro-heading {
+  font-size: 24px;
+  font-weight: 800;
+  margin-top: 4px;
+}
+.intro-content {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: #f8fafc;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.intro-key-preview {
+  width: 72px;
+  height: 72px;
+  background: #1e293b;
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  font-size: 36px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 0 #0f172a;
+}
+.intro-text {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+.intro-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.step-counter {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.intro-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Модалка Результатов */
+.results-confetti-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.trophy-icon {
+  font-size: 56px;
+  margin-bottom: 8px;
+}
+.res-stars-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0 8px;
+}
+.star-big {
+  font-size: 38px;
+  color: #cbd5e1;
+  transition: transform 0.3s;
+}
+.star-big.star-earned {
+  color: #f59e0b;
+  animation: star-bounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+@keyframes star-bounce {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.res-praise {
+  font-size: 17px;
+  font-weight: 700;
+  color: #3730a3;
+}
+.results-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  background: #f8fafc;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+.res-stat-box {
+  text-align: center;
+}
+.res-stat-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  display: block;
+}
+.res-stat-val {
+  font-size: 20px;
+  font-weight: 800;
+}
+.res-stat-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: block;
+}
+.results-footer-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Модалка Теории */
+.modal-theory-card {
+  max-width: 680px;
+}
+.video-container {
+  width: 100%;
+  margin-bottom: 16px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: #000000;
+}
+.lesson-video {
+  width: 100%;
+  max-height: 340px;
+  display: block;
+}
+.theory-illustration {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.theory-article h3 {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.theory-list {
+  padding-left: 20px;
+  margin: 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.diploma-badge {
+  background: #fef3c7;
+  border: 2px dashed #f59e0b;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  font-size: 16px;
+  color: #92400e;
+  margin-top: 16px;
+}
+
+/* Модалка Настроек */
+.settings-desc {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.settings-group {
+  padding: 16px 0;
+  border-top: 1px solid var(--border-color);
+}
+.settings-group h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.settings-group p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+.settings-btn-row {
+  display: flex;
+  gap: 10px;
+}
+.btn-file-label {
+  cursor: pointer;
+}
+.toggle-control {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+.toggle-control input {
+  display: none;
+}
+.toggle-slider {
+  width: 44px;
+  height: 24px;
+  background: #cbd5e1;
+  border-radius: 20px;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.toggle-control input:checked + .toggle-slider {
+  background: var(--primary);
+}
+.toggle-control input:checked + .toggle-slider::after {
+  transform: translateX(20px);
+}
+.toggle-label {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.modal-footer {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ================= БЕЙДЖ ПОЛЬЗОВАТЕЛЯ И ПК ================= */
+.pc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.pc-badge-icon {
+  font-size: 13px;
+}
+
+.pc-badge-user {
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-warning {
+  background: #f59e0b;
+  color: #ffffff;
+}
+.btn-warning:hover {
+  background: #d97706;
+}
+
+/* ================= МОДАЛКА: РЕЙТИНГ КЛАССА ================= */
+.modal-leaderboard-card {
+  max-width: 860px;
+  width: 95%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 28px;
+}
+
+.lb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.lb-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.lb-icon {
+  font-size: 38px;
+}
+
+.lb-header h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.lb-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.lb-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Вкладки рейтинга */
+.lb-tabs {
+  display: flex;
+  gap: 8px;
+  background: #f1f5f9;
+  padding: 5px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+}
+
+.lb-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.lb-tab:hover {
+  color: var(--text-primary);
+}
+
+.lb-tab.active {
+  background: #ffffff;
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ================= ПЬЕДЕСТАЛ ТОП-3 ================= */
+.lb-podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 0 10px;
+}
+
+.podium-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 160px;
+  text-align: center;
+}
+
+.podium-crown {
+  font-size: 24px;
+  margin-bottom: -6px;
+  animation: crown-float 2s infinite ease-in-out;
+}
+
+@keyframes crown-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.podium-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  border: 3px solid #cbd5e1;
+  background: #ffffff;
+  box-shadow: var(--shadow-md);
+}
+
+.podium-step-1 .podium-avatar {
+  width: 62px;
+  height: 62px;
+  font-size: 28px;
+  border-color: #f59e0b;
+  background: #fef3c7;
+}
+
+.podium-step-2 .podium-avatar {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
+.podium-step-3 .podium-avatar {
+  border-color: #d97706;
+  background: #ffedd5;
+}
+
+.podium-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.podium-pc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.podium-pillar {
+  width: 100%;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+  padding: 8px 4px;
+}
+
+.podium-step-1 .podium-pillar {
+  height: 96px;
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+}
+
+.podium-step-2 .podium-pillar {
+  height: 72px;
+  background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+}
+
+.podium-step-3 .podium-pillar {
+  height: 54px;
+  background: linear-gradient(180deg, #d97706 0%, #b45309 100%);
+}
+
+.podium-rank {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.podium-val {
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 4px;
+  background: rgba(0, 0, 0, 0.18);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+/* ================= ТАБЛИЦА РЕЙТИНГА ================= */
+.lb-table-wrapper {
+  flex: 1;
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+}
+
+.lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.lb-table th {
+  background: #f8fafc;
+  color: var(--text-secondary);
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--border-color);
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.lb-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.lb-table tr:hover {
+  background: #f8fafc;
+}
+
+/* Подсветка строки текущего ученика */
+.lb-row-current {
+  background: #eef2ff !important;
+  font-weight: 700;
+}
+
+.lb-row-current td {
+  border-top: 2px solid #6366f1;
+  border-bottom: 2px solid #6366f1;
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.rank-gold {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #f59e0b;
+}
+
+.rank-silver {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #94a3b8;
+}
+
+.rank-bronze {
+  background: #ffedd5;
+  color: #9a3412;
+  border: 1px solid #d97706;
+}
+
+.rank-normal {
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-cell-avatar {
+  font-size: 18px;
+}
+
+.user-cell-names {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-display-name {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.user-pc-name {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.you-pill {
+  display: inline-block;
+  background: #4f46e5;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+/* Футер рейтинга */
+.lb-footer {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lb-sync-status {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}

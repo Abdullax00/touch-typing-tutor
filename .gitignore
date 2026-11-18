@@ -1,0 +1,20 @@
+# Локальные данные и кэш профиля браузера в App Mode
+UserData/
+__pycache__/
+*.pyc
+*.pyo
+
+# Файлы результатов и тестов сервера
+leaderboard.json
+leaderboard.json.tmp
+*.tmp
+*.log
+
+# Временные файлы ОС
+.DS_Store
+Thumbs.db
+desktop.ini
+*.lnk
+
+# Резервные копии и архивы (если создаются локально)
+*.bak

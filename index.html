@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>В стране клавиш — Офлайн тренажёр слепой печати</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="user_env.js"></script>
+</head>
+<body>
+  <!-- Главная шапка приложения -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-badge" id="btn-nav-map" title="Перейти к списку уроков">
+        <span class="logo-icon">⌨️</span>
+        <div class="logo-texts">
+          <span class="logo-title">В стране клавиш</span>
+          <span class="logo-subtitle">Офлайн-тренажёр слепой печати</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="student-profile-bar">
+        <div class="pc-badge" id="pc-badge" title="Учётная запись Windows этого ПК">
+          <span class="pc-badge-icon">💻</span>
+          <span id="pc-badge-user" class="pc-badge-user">ПК</span>
+        </div>
+        <label for="student-select" class="student-label">Профиль:</label>
+        <select id="student-select" class="student-dropdown"></select>
+        <button id="btn-edit-student" class="btn btn-icon btn-sm" title="Изменить отображаемое имя (Фамилия Имя)">✏️</button>
+        <button id="btn-add-student" class="btn btn-circle" title="Добавить нового ученика">+</button>
+      </div>
+      <div class="header-stats-pill">
+        <span title="Заработано звёзд">⭐ <strong id="header-stars-count">0</strong></span>
+        <span class="divider">|</span>
+        <span title="Пройдено уроков">🏆 <strong id="header-progress-count">0 / 489</strong></span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button id="btn-leaderboard" class="btn btn-warning btn-sm" title="Общий рейтинг учеников класса">🏆 Рейтинг класса</button>
+      <button id="btn-custom-text" class="btn btn-secondary btn-sm" title="Задать собственный текст для тренировки">📝 Свой текст</button>
+      <button id="btn-settings" class="btn btn-secondary btn-sm" title="Настройки учителя и экспорт">⚙️ Учителю</button>
+      <button id="btn-mute" class="btn btn-icon" title="Включить / выключить звук">🔊</button>
+    </div>
+  </header>
+
+  <!-- Основное рабочее пространство -->
+  <main class="app-main">
+    
+    <!-- 1. Экран карты уроков (Course Map) -->
+    <section id="view-map" class="view-screen">
+      <div class="map-hero">
+        <h1>Курс «В стране клавиш»</h1>
+        <p>Освой десятипальцевый метод слепой печати шаг за шагом — от опорных букв до беглого набора!</p>
+      </div>
+      <div id="course-sections-container" class="sections-container"></div>
+    </section>
+
+    <!-- 2. Экран прохождения урока (Typing Lesson) -->
+    <section id="view-lesson" class="view-screen hidden">
+      <!-- Панель управления уроком -->
+      <div class="lesson-top-bar">
+        <div class="lesson-meta-info">
+          <button id="btn-lesson-back" class="btn btn-outline btn-sm">← К урокам</button>
+          <div class="lesson-headings">
+            <span id="lesson-header-section" class="lesson-section-tag">Домашний ряд</span>
+            <h2 id="lesson-header-title" class="lesson-main-title">#3: Клавиши а о</h2>
+          </div>
+        </div>
+
+        <!-- Живая статистика скорости и точности -->
+        <div class="live-metrics">
+          <div class="metric-card">
+            <span class="metric-label">СКОРОСТЬ</span>
+            <div class="metric-val-wrap">
+              <span id="stat-wpm" class="metric-val">0</span>
+              <span class="metric-unit">СВМ</span>
+            </div>
+            <span class="metric-sub">(<span id="stat-cpm">0</span> зн/мин)</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">ТОЧНОСТЬ</span>
+            <div class="metric-val-wrap">
+              <span id="stat-acc" class="metric-val">100%</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">ОШИБКИ</span>
+            <div class="metric-val-wrap">
+              <span id="stat-errors" class="metric-val error-color">0</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">ВРЕМЯ</span>
+            <div class="metric-val-wrap">
+              <span id="stat-time" class="metric-val">00:00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lesson-actions">
+          <button id="btn-font-minus" class="btn btn-icon btn-sm" title="Уменьшить шрифт">A-</button>
+          <button id="btn-font-plus" class="btn btn-icon btn-sm" title="Увеличить шрифт">A+</button>
+          <button id="btn-lesson-restart" class="btn btn-outline btn-sm" title="Начать урок заново (Tab+Enter)">🔄 Заново</button>
+        </div>
+      </div>
+
+      <!-- Предупреждение о неверной раскладке -->
+      <div id="lang-alert" class="lang-alert hidden">
+        ⚠️ Кажется, у тебя включена английская раскладка! Переключись на <strong>русский язык</strong> (Alt+Shift или Win+Пробел).
+      </div>
+
+      <!-- Поле текста для набора -->
+      <div class="typing-stage">
+        <div id="text-display" class="text-display-box" tabindex="0"></div>
+      </div>
+
+      <!-- Виртуальная клавиатура и руки -->
+      <div class="trainer-bottom-area">
+        <div id="keyboard-container" class="keyboard-wrapper"></div>
+        <div id="hands-container" class="hands-wrapper"></div>
+      </div>
+    </section>
+
+    <!-- 3. Экран мини-игры «Воздушные шарики» -->
+    <section id="view-game" class="view-screen hidden">
+      <div id="balloon-game-container" class="balloon-game-area"></div>
+    </section>
+
+    <!-- 4. Экран создания своего текста -->
+    <section id="view-custom" class="view-screen hidden">
+      <div class="custom-text-panel">
+        <h2>📝 Режим учителя: Свой текст для набора</h2>
+        <p>Вставьте любой текст, скороговорку или диктант, чтобы ученики тренировали именно его:</p>
+        <textarea id="custom-text-input" rows="8" placeholder="Вставьте сюда текст задания для класса... Например: Быстрая коричневая лисица перепрыгнула через ленивую собаку."></textarea>
+        <div class="custom-actions">
+          <button id="btn-start-custom" class="btn btn-primary btn-lg">▶ Начать тренировку по своему тексту</button>
+          <button onclick="typingApp.showScreen('map')" class="btn btn-secondary btn-lg">Отмена</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= МОДАЛЬНЫЕ ОКНА ================= -->
+
+  <!-- Модалка: Вводные инструкции к уроку (New Keys Slide) -->
+  <div id="modal-intro" class="modal-backdrop hidden">
+    <div class="modal-card modal-intro-card">
+      <div class="intro-header">
+        <span id="intro-tag" class="intro-tag">Учим новую клавишу</span>
+        <h2 id="intro-title" class="intro-heading">Нажми клавишу [А]</h2>
+      </div>
+      <div class="intro-content">
+        <div id="intro-chr-box" class="intro-key-preview">а</div>
+        <p id="intro-body" class="intro-text">Нажми на клавишу [а], используя левый указательный палец.</p>
+      </div>
+      <div class="intro-footer">
+        <span id="intro-step-counter" class="step-counter">Шаг 1 из 3</span>
+        <div class="intro-buttons">
+          <button id="btn-intro-prev" class="btn btn-secondary">← Назад</button>
+          <button id="btn-intro-next" class="btn btn-primary">Далее →</button>
+          <button id="btn-intro-start" class="btn btn-success" style="display:none">Начать урок! 🚀</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка: Результаты урока -->
+  <div id="modal-results" class="modal-backdrop hidden">
+    <div class="modal-card modal-results-card">
+      <div class="results-confetti-header">
+        <div class="trophy-icon">🏆</div>
+        <h2 id="res-lesson-title">Урок завершен!</h2>
+        <div id="res-stars" class="res-stars-row">
+          <span class="star-big star-earned">★</span>
+          <span class="star-big star-earned">★</span>
+          <span class="star-big star-earned">★</span>
+          <span class="star-big">★</span>
+          <span class="star-big">★</span>
+        </div>
+        <p id="res-praise-message" class="res-praise">Отличная работа!</p>
+      </div>
+
+      <div class="results-stats-grid">
+        <div class="res-stat-box">
+          <span class="res-stat-title">Скорость</span>
+          <span class="res-stat-val"><strong id="res-wpm">25</strong> СВМ</span>
+          <span class="res-stat-sub">(<span id="res-cpm">125</span> зн/мин)</span>
+        </div>
+        <div class="res-stat-box">
+          <span class="res-stat-title">Точность</span>
+          <span class="res-stat-val accent-blue"><strong id="res-acc">98%</strong></span>
+        </div>
+        <div class="res-stat-box">
+          <span class="res-stat-title">Ошибки</span>
+          <span class="res-stat-val error-color"><strong id="res-errors">1</strong></span>
+        </div>
+        <div class="res-stat-box">
+          <span class="res-stat-title">Время</span>
+          <span class="res-stat-val"><strong id="res-time">01:15</strong></span>
+        </div>
+      </div>
+
+      <div class="results-footer-actions">
+        <button id="btn-results-map" class="btn btn-secondary">К списку уроков</button>
+        <button id="btn-results-retry" class="btn btn-outline">🔄 Повторить</button>
+        <button id="btn-results-next" class="btn btn-success btn-lg">Следующий урок →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка: Теория и здоровье (Осанка, глаза, перерыв, грамота) -->
+  <div id="modal-theory" class="modal-backdrop hidden">
+    <div class="modal-card modal-theory-card">
+      <h2 id="theory-title">Полезные советы</h2>
+      <div id="theory-content" class="theory-body"></div>
+      <div class="modal-footer">
+        <button id="btn-theory-done" class="btn btn-primary btn-lg">Понятно, продолжить! 👍</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка: Настройки учителя -->
+  <div id="modal-settings" class="modal-backdrop hidden">
+    <div class="modal-card modal-settings-card">
+      <h2>⚙️ Панель преподавателя</h2>
+      <p class="settings-desc">Управление доступом к урокам, профилями учеников и сохранением результатов.</p>
+      
+      <div class="settings-group">
+        <label class="toggle-control">
+          <input type="checkbox" id="chk-teacher-unlock">
+          <span class="toggle-slider"></span>
+          <span class="toggle-label"><strong>Разблокировать все уроки курса</strong> (позволяет ученикам переходить на любой урок без обязательного прохождения предыдущих)</span>
+        </label>
+      </div>
+
+      <div class="settings-group">
+        <h3>Резервная копия и синхронизация</h3>
+        <p>Сохраните прогресс всех учеников в файл или перенесите его на другой компьютер:</p>
+        <div class="settings-btn-row">
+          <button id="btn-export-progress" class="btn btn-secondary">💾 Экспорт прогресса в файл</button>
+          <label class="btn btn-outline btn-file-label">
+            📂 Импорт прогресса из файла
+            <input type="file" id="input-import-file" accept=".json" style="display:none">
+          </label>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <h3>Сброс данных</h3>
+        <button id="btn-reset-current-progress" class="btn btn-danger btn-sm">⚠️ Сбросить прогресс текущего ученика</button>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btn-settings-close" class="btn btn-primary">Готово</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка: Общий рейтинг учеников класса -->
+  <div id="modal-leaderboard" class="modal-backdrop hidden">
+    <div class="modal-card modal-leaderboard-card">
+      <div class="lb-header">
+        <div class="lb-title-wrap">
+          <span class="lb-icon">🏆</span>
+          <div>
+            <h2>Рейтинг учеников класса</h2>
+            <p class="lb-subtitle">Результаты и соревнования всех компьютеров в классе</p>
+          </div>
+        </div>
+        <div class="lb-header-actions">
+          <button id="btn-lb-refresh" class="btn btn-outline btn-sm">🔄 Обновить</button>
+          <button id="btn-lb-close" class="btn btn-icon btn-sm" title="Закрыть">✕</button>
+        </div>
+      </div>
+
+      <!-- Вкладки сортировки рейтинга -->
+      <div class="lb-tabs">
+        <button class="lb-tab active" data-tab="stars">⭐ По звёздам</button>
+        <button class="lb-tab" data-tab="speed">⚡ По скорости (СВМ)</button>
+        <button class="lb-tab" data-tab="lessons">📚 По урокам</button>
+        <button class="lb-tab" data-tab="accuracy">🎯 По точности</button>
+      </div>
+
+      <!-- Пьедестал почёта Топ-3 -->
+      <div class="lb-podium" id="lb-podium"></div>
+
+      <!-- Полная таблица рейтинга -->
+      <div class="lb-table-wrapper">
+        <table class="lb-table">
+          <thead>
+            <tr>
+              <th class="col-rank">#</th>
+              <th class="col-user">Ученик / Компьютер</th>
+              <th class="col-stars">Звёзды</th>
+              <th class="col-speed">Скорость</th>
+              <th class="col-acc">Точность</th>
+              <th class="col-lessons">Пройдено</th>
+              <th class="col-status">Активность</th>
+            </tr>
+          </thead>
+          <tbody id="lb-table-body"></tbody>
+        </table>
+      </div>
+
+      <div class="lb-footer">
+        <div class="lb-sync-status" id="lb-sync-status">🟢 Локальный режим</div>
+        <button id="btn-lb-close-bottom" class="btn btn-primary">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Скрипты приложения -->
+  <script src="course_data.js"></script>
+  <script src="keyboard.js"></script>
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
