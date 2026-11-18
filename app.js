@@ -655,16 +655,80 @@ class TypingApp {
 
   /* ================= Обработка ввода с клавиатуры ================= */
   handleGlobalKeyDown(e) {
-    // Если открыты модальные окна, клавиатура не печатает в уроке
+    // Если открыты модальные окна, клавиатура управляет диалогами поверх экрана
     if (this.isAnyModalOpen()) {
-      if (e.key === 'Escape') this.closeAllModals();
+      if (e.key === 'Escape') {
+        this.closeAllModals();
+        return;
+      }
+
+      // Нажатие Enter или Пробел нажимает главную кнопку поверх интерфейса
       if (e.key === 'Enter' || e.code === 'Space') {
-        // Подтверждение модалки интро
-        const btnIntroStart = document.getElementById('btn-intro-start');
-        if (btnIntroStart && !this.modalIntro.classList.contains('hidden')) {
-          btnIntroStart.click();
+        // 1. Модальное окно результатов урока: «Следующий урок →»
+        if (this.modalResults && !this.modalResults.classList.contains('hidden')) {
+          e.preventDefault();
+          const btnNext = document.getElementById('btn-results-next');
+          if (btnNext) btnNext.click();
+          return;
+        }
+
+        // 2. Вводная инструкция к уроку: «Далее →» или «Начать урок! 🚀»
+        if (this.modalIntro && !this.modalIntro.classList.contains('hidden')) {
+          e.preventDefault();
+          const btnStart = document.getElementById('btn-intro-start');
+          const btnNext = document.getElementById('btn-intro-next');
+          if (btnStart && btnStart.style.display !== 'none') {
+            btnStart.click();
+          } else if (btnNext && btnNext.style.display !== 'none') {
+            btnNext.click();
+          }
+          return;
+        }
+
+        // 3. Теоретический урок: «Понятно, продолжить! 👍»
+        if (this.modalTheory && !this.modalTheory.classList.contains('hidden')) {
+          e.preventDefault();
+          const btnDone = document.getElementById('btn-theory-done');
+          if (btnDone) btnDone.click();
+          return;
+        }
+
+        // 4. Окно рейтинга: закрыть
+        if (this.modalLeaderboard && !this.modalLeaderboard.classList.contains('hidden')) {
+          e.preventDefault();
+          const btnLbClose = document.getElementById('btn-lb-close-bottom');
+          if (btnLbClose) btnLbClose.click();
+          return;
+        }
+
+        // 5. Окно настроек учителя: «Готово»
+        if (this.modalSettings && !this.modalSettings.classList.contains('hidden')) {
+          if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            const btnClose = document.getElementById('btn-settings-close');
+            if (btnClose) btnClose.click();
+            return;
+          }
         }
       }
+
+      // Перелистывание слайдов интро стрелками клавиатуры (Вправо / Влево)
+      if (this.modalIntro && !this.modalIntro.classList.contains('hidden')) {
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          const btnNext = document.getElementById('btn-intro-next');
+          const btnStart = document.getElementById('btn-intro-start');
+          if (btnStart && btnStart.style.display !== 'none') btnStart.click();
+          else if (btnNext && btnNext.style.display !== 'none') btnNext.click();
+          return;
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const btnPrev = document.getElementById('btn-intro-prev');
+          if (btnPrev && btnPrev.style.display !== 'none') btnPrev.click();
+          return;
+        }
+      }
+
       return;
     }
 
@@ -893,6 +957,10 @@ class TypingApp {
     }
 
     this.openModal(this.modalResults);
+    setTimeout(() => {
+      const nextBtn = document.getElementById('btn-results-next');
+      if (nextBtn) nextBtn.focus();
+    }, 60);
   }
 
   goToNextLesson() {
@@ -940,6 +1008,16 @@ class TypingApp {
       const isLast = currentSlide === slides.length - 1;
       document.getElementById('btn-intro-next').style.display = !isLast ? 'inline-block' : 'none';
       document.getElementById('btn-intro-start').style.display = isLast ? 'inline-block' : 'none';
+
+      setTimeout(() => {
+        if (isLast) {
+          const startBtn = document.getElementById('btn-intro-start');
+          if (startBtn) startBtn.focus();
+        } else {
+          const nextBtn = document.getElementById('btn-intro-next');
+          if (nextBtn) nextBtn.focus();
+        }
+      }, 60);
     };
 
     document.getElementById('btn-intro-next').onclick = () => {
@@ -1061,6 +1139,10 @@ class TypingApp {
     };
 
     this.openModal(this.modalTheory);
+    setTimeout(() => {
+      const doneBtn = document.getElementById('btn-theory-done');
+      if (doneBtn) doneBtn.focus();
+    }, 60);
   }
 
   /* ================= Режим игры «Воздушные шарики» ================= */
