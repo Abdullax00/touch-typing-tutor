@@ -554,7 +554,9 @@ class TypingApp {
 
     // Выбираем текст упражнения (text1 или случайный вариант, если их несколько)
     const texts = lesson.texts && lesson.texts.length > 0 ? lesson.texts : [''];
-    this.currentText = texts[Math.floor(Math.random() * texts.length)].trim();
+    const rawText = texts[Math.floor(Math.random() * texts.length)] || '';
+    // Нормализуем переносы строк (CRLF -> LF) и убираем пробелы/переносы только в самом конце текста
+    this.currentText = rawText.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/[\r\n\s]+$/, '');
 
     this.currentIndex = 0;
     this.errorsCount = 0;
@@ -595,12 +597,15 @@ class TypingApp {
       span.className = 'char';
       span.id = `char-${i}`;
 
-      if (char === ' ') {
+      if (char === ' ' || char === '\u00A0') {
         span.classList.add('char-space');
         span.innerHTML = '&nbsp;';
       } else if (char === '\n') {
         span.classList.add('char-newline');
         span.innerHTML = '↵<br>';
+      } else if (char === '\t') {
+        span.classList.add('char-tab');
+        span.innerHTML = '⇥&nbsp;&nbsp;&nbsp;&nbsp;';
       } else {
         span.textContent = char;
       }
@@ -793,14 +798,16 @@ class TypingApp {
     // Если урок печати активен
     if (!this.isLessonRunning || !this.currentLesson) return;
 
-    // Игнорируем клавиши-модификаторы без полезного ввода
-    if (['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Tab'].includes(e.key)) {
+    // Игнорируем исключительно служебные модификаторы (Shift, Ctrl, Alt, Meta, CapsLock)
+    if (['Shift', 'Control', 'Alt', 'Meta', 'CapsLock'].includes(e.key)) {
       return;
     }
 
-    // Предотвращаем дефолтный скролл страницы пробелом
-    if (e.code === 'Space') {
+    // Предотвращаем дефолтные действия браузера для служебных клавиш набора:
+    // Tab (чтобы не уходил фокус), Space (чтобы не скроллило страницу), Enter (чтобы не скроллило/не сабмитило)
+    if (e.key === 'Tab' || e.code === 'Tab' || e.key === ' ' || e.code === 'Space' || e.key === 'Enter' || e.code === 'Enter') {
       e.preventDefault();
+      e.stopPropagation();
     }
 
     // Backspace: стереть предыдущий символ
@@ -823,20 +830,37 @@ class TypingApp {
     const expectedChar = this.currentText[this.currentIndex];
     let typedChar = e.key;
 
-    // Проверка английской раскладки
-    if (window.EN_TO_RU_MAP[typedChar] && expectedChar !== typedChar) {
-      const mapped = window.EN_TO_RU_MAP[typedChar];
-      if (mapped === expectedChar) {
-        // Ученик нажал правильную физическую клавишу, но на английской раскладке!
-        this.showLangAlert();
+    // Преобразование специальных клавиш Enter и Tab в соответствующие символы
+    if (e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter') {
+      typedChar = '\n';
+    } else if (e.key === 'Tab' || e.code === 'Tab') {
+      typedChar = '\t';
+    }
+
+    // Проверка правильности нажатия
+    let isCorrect = false;
+    if (expectedChar === '\n' || expectedChar === '\r') {
+      isCorrect = (typedChar === '\n');
+    } else if (expectedChar === '\t') {
+      isCorrect = (typedChar === '\t');
+    } else if (expectedChar === ' ' || expectedChar === '\u00A0') {
+      isCorrect = (typedChar === ' ' || typedChar === '\u00A0');
+    } else {
+      // Проверка английской раскладки
+      if (window.EN_TO_RU_MAP && window.EN_TO_RU_MAP[typedChar] && expectedChar !== typedChar) {
+        const mapped = window.EN_TO_RU_MAP[typedChar];
+        if (mapped === expectedChar) {
+          this.showLangAlert();
+        }
       }
+      isCorrect = (typedChar === expectedChar);
     }
 
     this.totalTyped++;
-    const isCorrect = typedChar === expectedChar;
 
     // Анимация нажатия на виртуальной клавиатуре
-    this.keyboardManager.flashKeyPress(e.code, isCorrect);
+    const flashCode = (e.key === 'Enter' || e.code === 'Enter') ? 'Enter' : ((e.key === 'Tab' || e.code === 'Tab') ? 'Tab' : e.code);
+    this.keyboardManager.flashKeyPress(flashCode, isCorrect);
 
     if (isCorrect) {
       if (window.sound) window.sound.playKeyClick();

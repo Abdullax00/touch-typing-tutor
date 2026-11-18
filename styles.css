@@ -622,6 +622,24 @@ body {
   border-radius: 4px;
 }
 
+.char.char-newline,
+.char.char-tab {
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.char.char-newline.correct,
+.char.char-tab.correct {
+  color: #10b981;
+  background-color: #ecfdf5;
+}
+
+.char.char-newline.error,
+.char.char-tab.error {
+  color: #ef4444;
+  background-color: #fee2e2;
+}
+
 .char.correct {
   color: #10b981;
   background-color: #ecfdf5;

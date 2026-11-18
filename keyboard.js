@@ -112,6 +112,17 @@ const CHAR_TO_KEY_MAP = {};
     display: '↵'
   };
 
+  // Табуляция
+  CHAR_TO_KEY_MAP['\t'] = {
+    code: 'Tab',
+    finger: FINGER_MAP.L_PINKY,
+    needShift: false,
+    display: '⇥'
+  };
+
+  // Неразрывный пробел
+  CHAR_TO_KEY_MAP['\u00A0'] = CHAR_TO_KEY_MAP[' '];
+
   KEYBOARD_ROWS.forEach(row => {
     row.forEach(k => {
       const fingerObj = FINGER_MAP[k.finger];
@@ -412,7 +423,10 @@ class VirtualKeyboardManager {
 
     // Обновляем текстовую подсказку в центре
     if (targetCharEl) {
-      targetCharEl.textContent = char === ' ' ? '␣ Пробел' : char;
+      if (char === ' ' || char === '\u00A0') targetCharEl.textContent = '␣ Пробел';
+      else if (char === '\n') targetCharEl.textContent = '↵ Enter';
+      else if (char === '\t') targetCharEl.textContent = '⇥ Tab';
+      else targetCharEl.textContent = char;
     }
     if (targetTipEl) {
       targetTipEl.textContent = info.finger.name;
@@ -425,6 +439,10 @@ class VirtualKeyboardManager {
         targetSubEl.textContent = 'Опорная клавиша (засечка)';
       } else if (info.code === 'Space') {
         targetSubEl.textContent = 'Большой палец';
+      } else if (info.code === 'Enter') {
+        targetSubEl.textContent = 'Клавиша Enter (Ввод)';
+      } else if (info.code === 'Tab') {
+        targetSubEl.textContent = 'Клавиша Tab (Отступ)';
       } else {
         targetSubEl.textContent = info.finger.hand === 'left' ? 'Левая рука' : 'Правая рука';
       }
